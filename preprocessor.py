@@ -1,17 +1,12 @@
 from requests import request
 from requests.compat import *
 from bs4 import BeautifulSoup
-import dgl
-import pickle
 import pandas as pd
 import math
 import time
 import requests
-import torch
-import numpy as np
 import pandas as pd
 import math
-import ast
 
 def makePageDF(category_id, page_id, pagingsize):
 

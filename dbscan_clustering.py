@@ -21,15 +21,15 @@ def one_hot_encoding(category):
     # 데이터프레임의 성분 열을 고유 성분명으로 변환
     df['성분'] = df['성분'].apply(lambda x: replace_with_unique(x, unique_ingredients))
 
-    # 모든 성분을 집합으로 추출합니다.
+    # 모든 성분을 집합으로 추출
     all_ingredients = set()
     for ingredients in df['성분']:
         all_ingredients.update(ingredients)
 
-    # 성분 리스트를 정렬된 상태로 변환합니다.
+    # 성분 리스트를 정렬된 상태로 변환
     all_ingredients = sorted(all_ingredients)
 
-    # 결과를 저장할 데이터프레임을 생성합니다.
+    # 결과를 저장할 데이터프레임을 생성
     ingredient_data = []
 
     for ingredients in df['성분']:
@@ -38,21 +38,21 @@ def one_hot_encoding(category):
             row[ingredient] = 1 if ingredient in ingredients else 0
         ingredient_data.append(row)
 
-    # 데이터프레임으로 변환합니다.
+    # 데이터프레임으로 변환
     df_ingredients = pd.DataFrame(ingredient_data)
 
     df = df.loc[:, ['ID','상품명','브랜드','이미지']]
-    df = pd.concat([df,df_ingredients], axis=1)
+    df = pd.concat([df, df_ingredients], axis=1)
 
     return df
 
-# 중복 성분 제거를 위한 기준 성분 설정 (첫 번째 등장 성분 기준)
+# 중복 성분 제거를 위한 기준 성분 설정
 def get_unique_ingredients(ingredients):
     unique_ingredients = {}
     for ing in ingredients:
         # 기존 성분들과 유사도 비교
         match = process.extractOne(ing, unique_ingredients.keys(), scorer=fuzz.token_set_ratio)
-        if match and match[1] > 50:  # 유사도가 50 이상인 경우
+        if match and match[1] > 50:  # 유사도가 50 이상
             unique_ingredients[match[0]].append(ing)
         else:
             unique_ingredients[ing] = [ing]
@@ -70,7 +70,7 @@ def replace_with_unique(ingredient_list, unique_ingredients):
     return new_list
 
 def dbscan_clustering(category, df):
-    # 화장품 이름을 제외한 성분 데이터만 추출합니다.
+    # 화장품 이름을 제외한 성분 데이터만 추출
     ingredient_data = df.drop(columns=['ID','상품명','브랜드','이미지'])
 
     eps_range = range(5, 100)
@@ -87,7 +87,7 @@ def dbscan_clustering(category, df):
         else:
             silhouette_scores.append(-1)  # 의미 없는 값을 넣어두기
 
-    # 최적의 EPS 값 찾기
+    # 최적의 EPS 값 찾기 (실루엣 점수가 가장 높은 EPS 값 사용)
     optimal_eps = eps_range[silhouette_scores.index(max(silhouette_scores))]
     
     # 실루엣 점수 시각화
@@ -102,17 +102,17 @@ def dbscan_clustering(category, df):
 
     dbscan = DBSCAN(eps=optimal_eps*0.1, min_samples=7).fit(ingredient_data)
 
-    # 각 제품의 클러스터 레이블을 데이터프레임에 추가합니다.
+    # 각 제품의 클러스터 레이블을 데이터프레임에 추가
     df['Cluster'] = dbscan.labels_
 
     pca = PCA(n_components=2)
     pca_components = pca.fit_transform(ingredient_data)
 
-    # PCA 결과를 데이터프레임에 추가합니다.
+    # PCA 결과를 데이터프레임에 추가
     df['PCA1'] = pca_components[:, 0]
     df['PCA2'] = pca_components[:, 1]
 
-    # 클러스터를 시각화합니다.
+    # 클러스터 시각화
     plt.figure(figsize=(10, 6))
     sns.scatterplot(data=df, x='PCA1', y='PCA2', hue='Cluster', palette='viridis')
     plt.title(f'Cosmetic Products({category}) Clustering')
@@ -123,6 +123,6 @@ def dbscan_clustering(category, df):
 
 if __name__ == '__main__':
 
-    category = 'bbcream' # category 여기서 변경
+    category = 'conditioner' # category 여기서 변경
     df = one_hot_encoding(category)
     dbscan_clustering(category, df)

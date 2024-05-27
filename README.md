@@ -41,7 +41,7 @@ _DBSCAN min_samples 결정 근거: https://scikit-learn.org/stable/modules/gener
 
 ## 결과
 
-## 분석 결과
+### 분석 결과
 코드 마저 올라오면추가예정
 
 ### 해석 및 시사점

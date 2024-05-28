@@ -11,12 +11,11 @@ project_directory/
 │
 ├── data/                # 원본 데이터와 클러스터 결과들이 저장되는 디렉토리
 │
-├── scripts/             # 데이터 처리 및 분석 스크립트 디렉토리
-│   ├── preprocessor.py         # 데이터 수집 및 전처리 스크립트
-│   ├── recommend.py            # 클러스터링 기반 상품 추천 스크립트
-│   ├── dbscan_clustering.py    # DBSCAN 클러스터링 스크립트
-│   ├── k_means_clustering.py   # k-means 클러스터링 스크립트
-│   └── EDA.py                  # EDA 스크립트
+├── preprocessor.py         # 데이터 수집 및 전처리 스크립트
+├── recommend.py            # 클러스터링 기반 상품 추천 스크립트
+├── dbscan_clustering.py    # DBSCAN 클러스터링 스크립트
+├── k_means_clustering.py   # k-means 클러스터링 스크립트
+├── EDA.py                  # EDA 스크립트
 │
 ├── img/                 # 시각화 이미지 디렉토리
 │

@@ -121,7 +121,16 @@ python EDA.py
 전처리가 완료된 데이터를 사용하여 클러스터링을 수행합니다. 어떤 알고리즘을 실행하는지에 따라 `k_means_clustering.py` 또는 `dbscan_clustering.py` 스크립트를 실행하면 됩니다.
 
 ```bash
-python scripts/k_means_clustering.py
+python k_means_clustering.py
 # 또는
-python scripts/dbscan_clustering.py
+python dbscan_clustering.py
+```
+
+
+### 추천
+
+클러스터링이 완료된 데이터를 바탕으로 상품 추천을 위해 `recommend.py` 스크립트를 실행합니다.
+
+```bash
+python recommend.py
 ```

@@ -94,7 +94,7 @@ _(DBSCAN min_samples 결정 근거: https://scikit-learn.org/stable/modules/gene
 
    -> 해당 데이터에서 DBSCAN 클러스터링이 효과적이지 않다는 점을 분석 결과로 알 수 있었기 때문에, 추후 분석에서는 k-means 클러스터링을 기반으로 Dunn Index와 같은 다른 클러스터링 성능 평가 지표도 사용할 예정입니다.
     
-3. 현재 recommend.py에서는 코사인 유사도를 바탕으로 해당 상품과 가장 비슷한 상품, 가장 비슷하지 않은 상품들을 도출하고 있는데, 클러스터링 만으로는 효과적인 추천을 하는 데에 어려움이 있습니다.
+3. 현재 `recommend.py`에서는 코사인 유사도를 바탕으로 해당 상품과 가장 비슷한 상품, 가장 비슷하지 않은 상품들을 도출하고 있는데, 클러스터링 만으로는 효과적인 추천을 하는 데에 어려움이 있습니다.
 
    -> 추후 분석에서는 Collaborative Filtering과 같은 추천 시스템 알고리즘을 추가적으로 활용해 더 나은 추천을 제공할 예정입니다.
 
@@ -102,23 +102,23 @@ _(DBSCAN min_samples 결정 근거: https://scikit-learn.org/stable/modules/gene
 
 ### 데이터 전처리
 
-데이터 전처리를 위해 `scripts/preprocessor.py` 스크립트를 실행합니다. 이 스크립트는 원본 데이터를 읽고 필요한 전처리 작업을 수행합니다.
+데이터 전처리를 위해 `preprocessor.py` 스크립트를 실행합니다. 이 스크립트는 원본 데이터를 읽고 필요한 전처리 작업을 수행합니다.
 
 ```bash
-python scripts/preprocessor.py
+python preprocessor.py
 ```
 
 ### EDA
 
-EDA를 위해 `scripts/EDA.py` 스크립트를 실행합니다. 이 스크립트는 클러스터링 결과를 다양한 그래프로 나타냅니다.
+EDA를 위해 `EDA.py` 스크립트를 실행합니다. 이 스크립트는 EDA 결과를 다양한 그래프로 나타냅니다.
 
 ```bash
-python scripts/EDA.py
+python EDA.py
 ```
 
 ### 클러스터링
 
-전처리가 완료된 데이터를 사용하여 클러스터링을 수행합니다. 어떤 알고리즘을 실행하는지에 따라 `scripts/k_means_clustering.py` 또는 `scripts/dbscan_clustering.py` 스크립트를 실행하면 됩니다.
+전처리가 완료된 데이터를 사용하여 클러스터링을 수행합니다. 어떤 알고리즘을 실행하는지에 따라 `k_means_clustering.py` 또는 `dbscan_clustering.py` 스크립트를 실행하면 됩니다.
 
 ```bash
 python scripts/k_means_clustering.py

@@ -16,7 +16,7 @@ def recommend_similar_products(product_ID, df, num_recommendations=5):
     
     # 같은 클러스터에 있는 제품들 중에서 유사한 제품 선택 (자기 자신 제외)
     similar_product_indices = [i[0] for i in sim_scores if df.iloc[i[0]]['Cluster'] == product_cluster and i[0] != product_idx]
-    similar_products = df.iloc[similar_product_indices][['ID', '상품명', '이미지']].head(num_recommendations)
+    similar_products = df.iloc[similar_product_indices][['ID', '상품명']].head(num_recommendations)
     
     return similar_products
 
@@ -35,7 +35,7 @@ def recommend_dissimilar_products(product_ID, df, num_recommendations=5):
     
     # 다른 클러스터에 있는 제품들 중에서 유사하지 않은 제품 선택
     dissimilar_product_indices = [i[0] for i in sim_scores if df.iloc[i[0]]['Cluster'] != product_cluster]
-    dissimilar_products = df.iloc[dissimilar_product_indices][['ID', '상품명', '이미지']].head(num_recommendations)
+    dissimilar_products = df.iloc[dissimilar_product_indices][['ID', '상품명']].head(num_recommendations)
     
     return dissimilar_products
 
@@ -49,8 +49,8 @@ if __name__ == '__main__':
 
     print(f"'{product_id}'와 가장 비슷한 상품 5개:")
     for index, row in similar_products.iterrows():
-        print(f"ID: {row['ID']}, 상품명: {row['상품명']}, 이미지: {row['이미지']}")
+        print(f"ID: {row['ID']}, 상품명: {row['상품명']}")
 
     print(f"'{product_id}'와 가장 비슷하지 않은 상품 5개:")
     for index, row in dissimilar_products.iterrows():
-        print(f"ID: {row['ID']}, 상품명: {row['상품명']}, 이미지: {row['이미지']}")
+        print(f"ID: {row['ID']}, 상품명: {row['상품명']}")

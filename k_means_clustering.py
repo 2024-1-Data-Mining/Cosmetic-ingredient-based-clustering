@@ -75,13 +75,17 @@ def k_means_clustering(category, df):
     # 화장품 이름을 제외한 성분 데이터만 추출
     ingredient_data = df.drop(columns=['ID', '상품명', '브랜드', '이미지'])
 
+    # PCA를 이용해 차원 축소 진행
+    pca = PCA(n_components=2)
+    pca_components = pca.fit_transform(ingredient_data)
+
     k_range = range(2, 11)
     silhouette_scores = []
     
     for k in k_range:
         kmeans = KMeans(n_clusters=k, random_state=0)
-        labels = kmeans.fit_predict(ingredient_data)
-        score = silhouette_score(ingredient_data, labels)
+        labels = kmeans.fit_predict(pca_components)
+        score = silhouette_score(pca_components, labels)
         silhouette_scores.append(score)
     
     # 최적의 K 값 찾기 (실루엣 점수가 가장 높은 K 값 사용)
@@ -97,19 +101,14 @@ def k_means_clustering(category, df):
 
     print(f'이 클러스터링에서 최적의 k는 {optimal_k}이고, silhouette score는 {max(silhouette_scores)}이다.')
 
-    kmeans = KMeans(n_clusters=optimal_k, random_state=0).fit(ingredient_data)
+    kmeans = KMeans(n_clusters=optimal_k, random_state=0).fit(pca_components)
 
     # 각 제품의 Cluster label을 데이터프레임에 추가
     df['Cluster'] = kmeans.labels_
 
-    pca = PCA(n_components=2)
-    pca_components = pca.fit_transform(ingredient_data)
-
-    # PCA 결과 데이터프레임에 추가
+    # 클러스터 시각화
     df['PCA1'] = pca_components[:, 0]
     df['PCA2'] = pca_components[:, 1]
-
-    # 클러스터 시각화
     plt.figure(figsize=(10, 6))
     sns.scatterplot(data=df, x='PCA1', y='PCA2', hue='Cluster', palette='viridis')
     plt.title(f'Cosmetic Products({category}) Clustering')
@@ -119,6 +118,6 @@ def k_means_clustering(category, df):
     print(f'{category} K-means clustering 분석 완료')
 
 if __name__ == '__main__':
-    category = 'cream'  # category 여기서 변경
+    category = 'cleanser'  # category 여기서 변경
     df = one_hot_encoding(category)
     k_means_clustering(category, df)

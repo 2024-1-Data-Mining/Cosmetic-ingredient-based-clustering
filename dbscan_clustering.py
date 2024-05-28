@@ -4,7 +4,7 @@ from fuzzywuzzy import process, fuzz
 import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_score
 import seaborn as sns
-from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from sklearn.cluster import DBSCAN
 
 def one_hot_encoding(category):
@@ -73,16 +73,20 @@ def dbscan_clustering(category, df):
     # 화장품 이름을 제외한 성분 데이터만 추출
     ingredient_data = df.drop(columns=['ID','상품명','브랜드','이미지'])
 
+    # t-SNE를 이용해 차원 축소 진행
+    tsne = TSNE(n_components=2, random_state=0)
+    tsne_data = tsne.fit_transform(ingredient_data)
+
     eps_range = range(5, 100)
     silhouette_scores = []
     
     for k in eps_range:
         dbscan = DBSCAN(eps=k*0.1, min_samples=7)
-        labels = dbscan.fit_predict(ingredient_data)
+        labels = dbscan.fit_predict(tsne_data)
 
         # 클러스터 수가 2개 이상일 때만 silhouette score 계산
         if len(set(labels)) > 1:
-            score = silhouette_score(ingredient_data, labels)
+            score = silhouette_score(tsne_data, labels)
             silhouette_scores.append(score)
         else:
             silhouette_scores.append(-1)  # 의미 없는 값을 넣어두기
@@ -100,21 +104,16 @@ def dbscan_clustering(category, df):
 
     print(f'이 클러스터링에서 최적의 eps는 {optimal_eps*0.1}이고, silhouette score는 {max(silhouette_scores)}이다.')
 
-    dbscan = DBSCAN(eps=optimal_eps*0.1, min_samples=7).fit(ingredient_data)
+    dbscan = DBSCAN(eps=optimal_eps*0.1, min_samples=7).fit(tsne_data)
 
     # 각 제품의 클러스터 레이블을 데이터프레임에 추가
     df['Cluster'] = dbscan.labels_
 
-    pca = PCA(n_components=2)
-    pca_components = pca.fit_transform(ingredient_data)
-
-    # PCA 결과를 데이터프레임에 추가
-    df['PCA1'] = pca_components[:, 0]
-    df['PCA2'] = pca_components[:, 1]
-
     # 클러스터 시각화
+    df['t-SNE1'] = tsne_data[:, 0]
+    df['t-SNE2'] = tsne_data[:, 1]
     plt.figure(figsize=(10, 6))
-    sns.scatterplot(data=df, x='PCA1', y='PCA2', hue='Cluster', palette='viridis')
+    sns.scatterplot(data=df, x='t-SNE1', y='t-SNE2', hue='Cluster', palette='viridis')
     plt.title(f'Cosmetic Products({category}) Clustering')
     plt.savefig(f'img/dbscan_{category}_visualization.png')
 
@@ -123,6 +122,6 @@ def dbscan_clustering(category, df):
 
 if __name__ == '__main__':
 
-    category = 'conditioner' # category 여기서 변경
+    category = 'cream' # category 여기서 변경
     df = one_hot_encoding(category)
     dbscan_clustering(category, df)
